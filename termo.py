@@ -70,8 +70,8 @@ def bellman_ford(on_cost, off_cost, iterations):
 
 # Ejemplo de uso
 # Coste optimo es 4 en ON y 5 en OFF
-costo_on = 4
-costo_off = 5
+costo_on = 0.75
+costo_off = 1
 
-valores_V = bellman_ford(costo_on, costo_off, 200)
+valores_V = bellman_ford(costo_on, costo_off, 300)
 print(valores_V)
