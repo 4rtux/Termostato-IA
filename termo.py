@@ -46,8 +46,8 @@ def bellman_ford(on_cost, off_cost):
 
     # Calcular V para cada estado usando la ecuacion de Bellman
     # Empezando desde un estado aleatorio, seguir la politica optima hasta alcanzar la convergencia a 22 grados
-    ### state = 0
-    state = np.random.randint(0, num_states)
+    state = 0
+    #state = np.random.randint(0, num_states)
     # Crear lista de temperaturas para poder saber a que temperatura corresponde cada estado
     # Los estados tienen indices del 0 al 18, pero las temperaturas van de 16 a 25.5 de 0.5 en 0.5
     # Esto se hace para que la representacion grafica sea mas intuitiva y contenga las temperaturas reales en lugar de los indices
@@ -56,13 +56,18 @@ def bellman_ford(on_cost, off_cost):
         temperatures.append(i)
     # Lista que guarda el recorrido de temperaturas que sigue el sistema
     route = []
+    route_with_itertions = []
+    route_with_itertions.append(temperatures[state])
     route.append(temperatures[state])
-
+    if state == 12:
+        expected_state = True
     expected_state = False
+    n_it = 1000
     iterations = 0
-
-    while not expected_state:
+# Implementacion que falta: se hacen dos graficas. Una para 1000 iteraciones y otra para el recorrido hasta 22 grados, la de 1000 iteraciones demuestra la convergencia 
+    while not(expected_state) or (n_it != 0):
         iterations += 1
+        n_it -= 1
         # Si la politica es 1 para el estado state, se usan las probabilidades de la matriz ON para calcular el siguiente estado
         if policy[state] == 1:
             state = np.random.choice(range(num_states), p=on_matrix.iloc[state])
@@ -72,10 +77,15 @@ def bellman_ford(on_cost, off_cost):
             state = np.random.choice(range(num_states), p=off_matrix.iloc[state])
         # Guardar la temperatura correspondiente al estado en la lista route
         route.append(temperatures[state])
+        route_with_itertions.append(temperatures[state])
         if state == 12:
             expected_state = True
     # Muestra en una grafica las temperaturas para cada iteracion unidas por una linea
+    plt.plot(route_with_itertions)
+    print('route with iterations printed')
+    plt.show()
     plt.plot(route)
+    print('normal route printed')
     plt.show()
     print('22 degrees reached with', iterations, 'iterations!')
     
