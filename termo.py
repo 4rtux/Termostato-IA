@@ -13,8 +13,8 @@ def bellman_ford(on_cost, off_cost):
     on_matrix = on_matrix.T.reset_index(drop=True).T
     off_matrix = off_matrix.T.reset_index(drop=True).T
 
-    print('ON matrix: \n', on_matrix)
-    print('OFF matrix: \n', off_matrix)
+    # print('ON matrix: \n', on_matrix)
+    # print('OFF matrix: \n', off_matrix)
 
     # Inicializar las listas de V_actual , V_anterior y la politica que guardaran los valores de V y la politica optima para cada estado
     num_states = len(on_matrix)
@@ -46,8 +46,7 @@ def bellman_ford(on_cost, off_cost):
 
     # Calcular V para cada estado usando la ecuacion de Bellman
     # Empezando desde un estado aleatorio, seguir la politica optima hasta alcanzar la convergencia a 22 grados
-    state = 0
-    #state = np.random.randint(0, num_states)
+    state = np.random.randint(0, num_states)
     # Crear lista de temperaturas para poder saber a que temperatura corresponde cada estado
     # Los estados tienen indices del 0 al 18, pero las temperaturas van de 16 a 25.5 de 0.5 en 0.5
     # Esto se hace para que la representacion grafica sea mas intuitiva y contenga las temperaturas reales en lugar de los indices
@@ -62,11 +61,10 @@ def bellman_ford(on_cost, off_cost):
     if state == 12:
         expected_state = True
     expected_state = False
-    n_it = 1000
+    n_it = 300
     iterations = 0
 # Implementacion que falta: se hacen dos graficas. Una para 1000 iteraciones y otra para el recorrido hasta 22 grados, la de 1000 iteraciones demuestra la convergencia 
     while not(expected_state) or (n_it != 0):
-        iterations += 1
         n_it -= 1
         # Si la politica es 1 para el estado state, se usan las probabilidades de la matriz ON para calcular el siguiente estado
         if policy[state] == 1:
@@ -76,19 +74,28 @@ def bellman_ford(on_cost, off_cost):
         else:
             state = np.random.choice(range(num_states), p=off_matrix.iloc[state])
         # Guardar la temperatura correspondiente al estado en la lista route
-        route.append(temperatures[state])
-        route_with_itertions.append(temperatures[state])
+        if expected_state == False:
+            iterations += 1
+            route.append(temperatures[state])
+        route_with_itertions.append(temperatures[state]) # Esta ruta olvida que el estado es absorbente y muestra la convergencia
         if state == 12:
             expected_state = True
-    # Muestra en una grafica las temperaturas para cada iteracion unidas por una linea
+    # Muestra la ruta con 300 iteraciones ignorando que el estado 12 es absorbente
+    plt.title('300 iterations without absorbing state')
+    plt.xlabel('Iterations')
+    plt.ylabel('Temperatures')
     plt.plot(route_with_itertions)
-    print('route with iterations printed')
+    print('Route with 300 iterations printed')
     plt.show()
+    # Muestra las iteraciones que se han necesitado para alcanzar la temperatura objetivo
+    plt.title('Iterations needed to reach 22 degrees')
+    plt.xlabel('Iterations')
+    plt.ylabel('Temperatures')
     plt.plot(route)
-    print('normal route printed')
+    print('Normal route printed')
     plt.show()
     print('22 degrees reached with', iterations, 'iterations!')
-    
+
     return policy
 
 # Ejemplo de uso
